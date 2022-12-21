@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RSpec results</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Expires" content="-1" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-size: 80%;
+  }
+  </style>
+  <script type="text/javascript">
+    // <![CDATA[
+
+function addClass(element_id, classname) {
+  document.getElementById(element_id).className += (" " + classname);
+}
+
+function removeClass(element_id, classname) {
+  var elem = document.getElementById(element_id);
+  var classlist = elem.className.replace(classname,'');
+  elem.className = classlist;
+}
+
+function moveProgressBar(percentDone) {
+  document.getElementById("rspec-header").style.width = percentDone +"%";
+}
+
+function makeRed(element_id) {
+  removeClass(element_id, 'passed');
+  removeClass(element_id, 'not_implemented');
+  addClass(element_id,'failed');
+}
+
+function makeYellow(element_id) {
+  var elem = document.getElementById(element_id);
+  if (elem.className.indexOf("failed") == -1) {  // class doesn't includes failed
+    if (elem.className.indexOf("not_implemented") == -1) { // class doesn't include not_implemented
+      removeClass(element_id, 'passed');
+      addClass(element_id,'not_implemented');
+    }
+  }
+}
+
+function apply_filters() {
+  var passed_filter = document.getElementById('passed_checkbox').checked;
+  var failed_filter = document.getElementById('failed_checkbox').checked;
+  var pending_filter = document.getElementById('pending_checkbox').checked;
+
+  assign_display_style("example passed", passed_filter);
+  assign_display_style("example failed", failed_filter);
+  assign_display_style("example not_implemented", pending_filter);
+
+  assign_display_style_for_group("example_group passed", passed_filter);
+  assign_display_style_for_group("example_group not_implemented", pending_filter, pending_filter || passed_filter);
+  assign_display_style_for_group("example_group failed", failed_filter, failed_filter || pending_filter || passed_filter);
+}
+
+function get_display_style(display_flag) {
+  var style_mode = 'none';
+  if (display_flag == true) {
+    style_mode = 'block';
+  }
+  return style_mode;
+}
+
+function assign_display_style(classname, display_flag) {
+  var style_mode = get_display_style(display_flag);
+  var elems = document.getElementsByClassName(classname)
+  for (var i=0; i<elems.length;i++) {
+    elems[i].style.display = style_mode;
+  }
+}
+
+function assign_display_style_for_group(classname, display_flag, subgroup_flag) {
+  var display_style_mode = get_display_style(display_flag);
+  var subgroup_style_mode = get_display_style(subgroup_flag);
+  var elems = document.getElementsByClassName(classname)
+  for (var i=0; i<elems.length;i++) {
+    var style_mode = display_style_mode;
+    if ((display_flag != subgroup_flag) && (elems[i].getElementsByTagName('dt')[0].innerHTML.indexOf(", ") != -1)) {
+      elems[i].style.display = subgroup_style_mode;
+    } else {
+      elems[i].style.display = display_style_mode;
+    }
+  }
+}
+
+    // ]]>
+  </script>
+  <style type="text/css">
+#rspec-header {
+  background: #65C400; color: #fff; height: 4em;
+}
+
+.rspec-report h1 {
+  margin: 0px 10px 0px 10px;
+  padding: 10px;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  font-size: 1.8em;
+  position: absolute;
+}
+
+#label {
+  float:left;
+}
+
+#display-filters {
+  float:left;
+  padding: 28px 0 0 40%;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+}
+
+#summary {
+  float:right;
+  padding: 5px 10px;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  text-align: right;
+}
+
+#summary p {
+  margin: 0 0 0 2px;
+}
+
+#summary #totals {
+  font-size: 1.2em;
+}
+
+.example_group {
+  margin: 0 10px 5px;
+  background: #fff;
+}
+
+dl {
+  margin: 0; padding: 0 0 5px;
+  font: normal 11px "Lucida Grande", Helvetica, sans-serif;
+}
+
+dt {
+  padding: 3px;
+  background: #65C400;
+  color: #fff;
+  font-weight: bold;
+}
+
+dd {
+  margin: 5px 0 5px 5px;
+  padding: 3px 3px 3px 18px;
+}
+
+dd .duration {
+  padding-left: 5px;
+  text-align: right;
+  right: 0px;
+  float:right;
+}
+
+dd.example.passed {
+  border-left: 5px solid #65C400;
+  border-bottom: 1px solid #65C400;
+  background: #DBFFB4; color: #3D7700;
+}
+
+dd.example.not_implemented {
+  border-left: 5px solid #FAF834;
+  border-bottom: 1px solid #FAF834;
+  background: #FCFB98; color: #131313;
+}
+
+dd.example.pending_fixed {
+  border-left: 5px solid #0000C2;
+  border-bottom: 1px solid #0000C2;
+  color: #0000C2; background: #D3FBFF;
+}
+
+dd.example.failed {
+  border-left: 5px solid #C20000;
+  border-bottom: 1px solid #C20000;
+  color: #C20000; background: #FFFBD3;
+}
+
+
+dt.not_implemented {
+  color: #000000; background: #FAF834;
+}
+
+dt.pending_fixed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+dt.failed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+
+#rspec-header.not_implemented {
+  color: #000000; background: #FAF834;
+}
+
+#rspec-header.pending_fixed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+#rspec-header.failed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+
+.backtrace {
+  color: #000;
+  font-size: 12px;
+}
+
+a {
+  color: #BE5C00;
+}
+
+/* Ruby code, style similar to vibrant ink */
+.ruby {
+  font-size: 12px;
+  font-family: monospace;
+  color: white;
+  background-color: black;
+  padding: 0.1em 0 0.2em 0;
+}
+
+.ruby .keyword { color: #FF6600; }
+.ruby .constant { color: #339999; }
+.ruby .attribute { color: white; }
+.ruby .global { color: white; }
+.ruby .module { color: white; }
+.ruby .class { color: white; }
+.ruby .string { color: #66FF00; }
+.ruby .ident { color: white; }
+.ruby .method { color: #FFCC00; }
+.ruby .number { color: white; }
+.ruby .char { color: white; }
+.ruby .comment { color: #9933CC; }
+.ruby .symbol { color: white; }
+.ruby .regex { color: #44B4CC; }
+.ruby .punct { color: white; }
+.ruby .escape { color: white; }
+.ruby .interp { color: white; }
+.ruby .expr { color: white; }
+
+.ruby .offending { background-color: gray; }
+.ruby .linenum {
+  width: 75px;
+  padding: 0.1em 1em 0.2em 0;
+  color: #000000;
+  background-color: #FFFBD3;
+}
+
+  </style>
+</head>
+<body>
+<div class="rspec-report">
+
+<div id="rspec-header">
+  <div id="label">
+    <h1>RSpec Code Examples</h1>
+  </div>
+
+  <div id="display-filters">
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
+  </div>
+
+  <div id="summary">
+    <p id="totals">&#160;</p>
+    <p id="duration">&#160;</p>
+  </div>
+</div>
+
+
+<div class="results">
+<div id="div_group_1" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_1" class="passed">Service W3SVC</dt>
+    <script type="text/javascript">makeRed('rspec-header');</script>
+    <script type="text/javascript">makeRed('div_group_1');</script>
+    <script type="text/javascript">makeRed('example_group_1');</script>
+    <script type="text/javascript">moveProgressBar('1.6');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to be installed</span>
+      <span class="duration">0.34086s</span>
+      <div class="failure" id="failure_1">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected that `Service W3SVC` is installed
+  # inspec/controls/IIS_10_Compliance.rb:7:in `block (2 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:7:in `block (2 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">5</span>
+<span class="linenum">6</span><span class="keyword">describe</span> service(<span class="string"><span class="delimiter">'</span><span class="content">W3SVC</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">7</span>  <span class="keyword">it</span> { should be_installed }</span>
+<span class="linenum">8</span>  <span class="keyword">it</span> { should be_running }
+<span class="linenum">9</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('3.2');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to be running</span>
+      <span class="duration">0.00053s</span>
+      <div class="failure" id="failure_2">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected that `Service W3SVC` is running
+  # inspec/controls/IIS_10_Compliance.rb:8:in `block (2 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:8:in `block (2 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">6</span><span class="keyword">describe</span> service(<span class="string"><span class="delimiter">'</span><span class="content">W3SVC</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">7</span>  <span class="keyword">it</span> { should be_installed }
+<span class="offending"><span class="linenum">8</span>  <span class="keyword">it</span> { should be_running }</span>
+<span class="linenum">9</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_2" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_2" class="passed">Powershell</dt>
+  </dl>
+</div>
+<div id="div_group_3" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_3" class="passed">stdout</dt>
+    <script type="text/javascript">makeRed('div_group_3');</script>
+    <script type="text/javascript">makeRed('example_group_3');</script>
+    <script type="text/javascript">moveProgressBar('4.8');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to include &quot;False&quot;</span>
+      <span class="duration">0.94257s</span>
+      <div class="failure" id="failure_3">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected &quot;&quot; to include &quot;False&quot;
+  # inspec/controls/IIS_10_Compliance.rb:35:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:35:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">33</span>
+<span class="linenum">34</span><span class="keyword">describe</span> powershell(script) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">35</span>  its(<span class="string"><span class="delimiter">&quot;</span><span class="content">stdout</span><span class="delimiter">&quot;</span></span>) { should include <span class="string"><span class="delimiter">&quot;</span><span class="content">False</span><span class="delimiter">&quot;</span></span> }</span>
+<span class="linenum">36</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_4" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_4" class="passed">Powershell</dt>
+  </dl>
+</div>
+<div id="div_group_5" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_5" class="passed">stdout</dt>
+    <script type="text/javascript">makeRed('div_group_5');</script>
+    <script type="text/javascript">makeRed('example_group_5');</script>
+    <script type="text/javascript">moveProgressBar('6.4');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq &quot;\r\nValue\r\n-----\r\n True\r\n\r\n\r\n&quot;</span>
+      <span class="duration">0.04082s</span>
+      <div class="failure" id="failure_4">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: &quot;\r\nValue\r\n-----\r\n True\r\n\r\n\r\n&quot;
+         got: &quot;&quot;
+
+    (compared using ==)
+
+    Diff:
+    @@ -1,7 +1 @@
+    -
+    -Value
+    ------
+    - True
+    -
+    -
+  # inspec/controls/IIS_10_Compliance.rb:43:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:43:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">41</span><span class="constant">EOH</span>
+<span class="linenum">42</span><span class="keyword">describe</span> powershell(script) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">43</span>  its(<span class="string"><span class="delimiter">&quot;</span><span class="content">stdout</span><span class="delimiter">&quot;</span></span>) { should eq <span class="string"><span class="delimiter">&quot;</span><span class="char">\r</span><span class="char">\n</span><span class="content">Value</span><span class="char">\r</span><span class="char">\n</span><span class="content">-----</span><span class="char">\r</span><span class="char">\n</span><span class="content"> True</span><span class="char">\r</span><span class="char">\n</span><span class="char">\r</span><span class="char">\n</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> }</span>
+<span class="linenum">44</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_6" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_6" class="passed">Windows Feature &#39;Web-DAV-Publishing&#39;</dt>
+    <script type="text/javascript">moveProgressBar('8.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected not to be installed</span><span class='duration'>0.65488s</span></dd>
+  </dl>
+</div>
+<div id="div_group_7" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_7" class="passed">Powershell</dt>
+  </dl>
+</div>
+<div id="div_group_8" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_8" class="passed">stdout</dt>
+    <script type="text/javascript">makeRed('div_group_8');</script>
+    <script type="text/javascript">makeRed('example_group_8');</script>
+    <script type="text/javascript">moveProgressBar('9.6');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq &quot;AES\r\n&quot;</span>
+      <span class="duration">0.02990s</span>
+      <div class="failure" id="failure_5">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: &quot;AES\r\n&quot;
+         got: &quot;&quot;
+
+    (compared using ==)
+
+    Diff:
+    @@ -1,2 +1 @@
+    -AES
+  # inspec/controls/IIS_10_Compliance.rb:140:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:140:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">138</span><span class="constant">EOH</span>
+<span class="linenum">139</span><span class="keyword">describe</span> powershell(script) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">140</span>    its(<span class="string"><span class="delimiter">'</span><span class="content">stdout</span><span class="delimiter">'</span></span>) { should eq <span class="string"><span class="delimiter">&quot;</span><span class="content">AES</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> }        </span>
+<span class="linenum">141</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_9" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_9" class="passed">Powershell</dt>
+  </dl>
+</div>
+<div id="div_group_10" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_10" class="passed">stdout</dt>
+    <script type="text/javascript">makeRed('div_group_10');</script>
+    <script type="text/javascript">makeRed('example_group_10');</script>
+    <script type="text/javascript">moveProgressBar('11.2');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq &quot;True\r\n&quot;</span>
+      <span class="duration">0.03842s</span>
+      <div class="failure" id="failure_6">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: &quot;True\r\n&quot;
+         got: &quot;&quot;
+
+    (compared using ==)
+
+    Diff:
+    @@ -1,2 +1 @@
+    -True
+  # inspec/controls/IIS_10_Compliance.rb:148:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:148:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">146</span><span class="constant">EOH</span>
+<span class="linenum">147</span><span class="keyword">describe</span> powershell(script) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">148</span>    its(<span class="string"><span class="delimiter">'</span><span class="content">stdout</span><span class="delimiter">'</span></span>) { should eq <span class="string"><span class="delimiter">&quot;</span><span class="content">True</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> }        </span>
+<span class="linenum">149</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_11" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_11" class="passed">Powershell</dt>
+  </dl>
+</div>
+<div id="div_group_12" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_12" class="passed">stdout</dt>
+    <script type="text/javascript">makeRed('div_group_12');</script>
+    <script type="text/javascript">makeRed('example_group_12');</script>
+    <script type="text/javascript">moveProgressBar('12.9');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq &quot;\r\nverb \r\n---- \r\nTRACE\r\n\r\n\r\n&quot;</span>
+      <span class="duration">0.04459s</span>
+      <div class="failure" id="failure_7">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: &quot;\r\nverb \r\n---- \r\nTRACE\r\n\r\n\r\n&quot;
+         got: &quot;&quot;
+
+    (compared using ==)
+
+    Diff:
+    @@ -1,7 +1 @@
+    -
+    -verb 
+    ----- 
+    -TRACE
+    -
+    -
+  # inspec/controls/IIS_10_Compliance.rb:156:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:156:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">154</span><span class="constant">EOH</span>
+<span class="linenum">155</span><span class="keyword">describe</span> powershell(script) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">156</span>    its(<span class="string"><span class="delimiter">'</span><span class="content">stdout</span><span class="delimiter">'</span></span>) { should eq <span class="string"><span class="delimiter">&quot;</span><span class="char">\r</span><span class="char">\n</span><span class="content">verb </span><span class="char">\r</span><span class="char">\n</span><span class="content">---- </span><span class="char">\r</span><span class="char">\n</span><span class="content">TRACE</span><span class="char">\r</span><span class="char">\n</span><span class="char">\r</span><span class="char">\n</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> }        </span>
+<span class="linenum">157</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_13" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_13" class="passed">Powershell</dt>
+  </dl>
+</div>
+<div id="div_group_14" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_14" class="passed">stdout</dt>
+    <script type="text/javascript">makeRed('div_group_14');</script>
+    <script type="text/javascript">makeRed('example_group_14');</script>
+    <script type="text/javascript">moveProgressBar('14.5');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq &quot;SslRequire\r\n&quot;</span>
+      <span class="duration">0.02992s</span>
+      <div class="failure" id="failure_8">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: &quot;SslRequire\r\n&quot;
+         got: &quot;&quot;
+
+    (compared using ==)
+
+    Diff:
+    @@ -1,2 +1 @@
+    -SslRequire
+  # inspec/controls/IIS_10_Compliance.rb:165:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:165:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">163</span><span class="constant">EOH</span>
+<span class="linenum">164</span><span class="keyword">describe</span> powershell(script) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">165</span>    its(<span class="string"><span class="delimiter">'</span><span class="content">stdout</span><span class="delimiter">'</span></span>) { should eq <span class="string"><span class="delimiter">&quot;</span><span class="content">SslRequire</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> }        </span>
+<span class="linenum">166</span> <span class="keyword">end</span>
+<span class="linenum">167</span>  script = <span class="string"><span class="delimiter">&lt;&lt;-EOH</span></span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_15" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_15" class="passed">Powershell</dt>
+  </dl>
+</div>
+<div id="div_group_16" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_16" class="passed">stdout</dt>
+    <script type="text/javascript">makeRed('div_group_16');</script>
+    <script type="text/javascript">makeRed('example_group_16');</script>
+    <script type="text/javascript">moveProgressBar('16.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq &quot;SslRequire\r\n&quot;</span>
+      <span class="duration">0.03122s</span>
+      <div class="failure" id="failure_9">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: &quot;SslRequire\r\n&quot;
+         got: &quot;&quot;
+
+    (compared using ==)
+
+    Diff:
+    @@ -1,2 +1 @@
+    -SslRequire
+  # inspec/controls/IIS_10_Compliance.rb:171:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:171:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">169</span><span class="constant">EOH</span>
+<span class="linenum">170</span><span class="keyword">describe</span> powershell(script) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">171</span>    its(<span class="string"><span class="delimiter">'</span><span class="content">stdout</span><span class="delimiter">'</span></span>) { should eq <span class="string"><span class="delimiter">&quot;</span><span class="content">SslRequire</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> }        </span>
+<span class="linenum">172</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_17" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_17" class="passed">Powershell</dt>
+  </dl>
+</div>
+<div id="div_group_18" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_18" class="passed">stdout</dt>
+    <script type="text/javascript">makeRed('div_group_18');</script>
+    <script type="text/javascript">makeRed('example_group_18');</script>
+    <script type="text/javascript">moveProgressBar('17.7');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq &quot;True\r\n&quot;</span>
+      <span class="duration">0.03139s</span>
+      <div class="failure" id="failure_10">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: &quot;True\r\n&quot;
+         got: &quot;&quot;
+
+    (compared using ==)
+
+    Diff:
+    @@ -1,2 +1 @@
+    -True
+  # inspec/controls/IIS_10_Compliance.rb:179:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:179:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">177</span><span class="constant">EOH</span>
+<span class="linenum">178</span><span class="keyword">describe</span> powershell(script) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">179</span>    its(<span class="string"><span class="delimiter">'</span><span class="content">stdout</span><span class="delimiter">'</span></span>) { should eq <span class="string"><span class="delimiter">&quot;</span><span class="content">True</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> }        </span>
+<span class="linenum">180</span><span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_19" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_19" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server</dt>
+    <script type="text/javascript">makeRed('div_group_19');</script>
+    <script type="text/javascript">makeRed('example_group_19');</script>
+    <script type="text/javascript">moveProgressBar('19.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to exist</span>
+      <span class="duration">0.04704s</span>
+      <div class="failure" id="failure_11">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server to exist
+  # inspec/controls/IIS_10_Compliance.rb:184:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:184:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">182</span><span class="comment">#7.2 Ensure SSLv2 is Disabled</span>
+<span class="linenum">183</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">SSL 2.0</span><span class="char">\\</span><span class="content">Server</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">184</span>          <span class="keyword">it</span> { should exist }</span>
+<span class="linenum">185</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }
+<span class="linenum">186</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('20.9');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;DisabledByDefault&quot;</span>
+      <span class="duration">0.06197s</span>
+      <div class="failure" id="failure_12">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server.has_property?(&quot;DisabledByDefault&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:185:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:185:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">183</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">SSL 2.0</span><span class="char">\\</span><span class="content">Server</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">184</span>          <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">185</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">186</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">187</span>        </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_20" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_20" class="passed">DisabledByDefault</dt>
+    <script type="text/javascript">makeRed('div_group_20');</script>
+    <script type="text/javascript">makeRed('example_group_20');</script>
+    <script type="text/javascript">moveProgressBar('22.5');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00026s</span>
+      <div class="failure" id="failure_13">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:186:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:186:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">184</span>          <span class="keyword">it</span> { should exist }
+<span class="linenum">185</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">186</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">187</span>        
+<span class="linenum">188</span>    <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_21" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_21" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client</dt>
+    <script type="text/javascript">makeRed('div_group_21');</script>
+    <script type="text/javascript">makeRed('example_group_21');</script>
+    <script type="text/javascript">moveProgressBar('24.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to exist</span>
+      <span class="duration">0.02391s</span>
+      <div class="failure" id="failure_14">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client to exist
+  # inspec/controls/IIS_10_Compliance.rb:190:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:190:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">188</span>    <span class="keyword">end</span>
+<span class="linenum">189</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">SSL 2.0</span><span class="char">\\</span><span class="content">Client</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">190</span>          <span class="keyword">it</span> { should exist }</span>
+<span class="linenum">191</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }
+<span class="linenum">192</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('25.8');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;DisabledByDefault&quot;</span>
+      <span class="duration">0.01274s</span>
+      <div class="failure" id="failure_15">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client.has_property?(&quot;DisabledByDefault&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:191:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:191:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">189</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">SSL 2.0</span><span class="char">\\</span><span class="content">Client</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">190</span>          <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">191</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">192</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">193</span>        <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_22" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_22" class="passed">DisabledByDefault</dt>
+    <script type="text/javascript">makeRed('div_group_22');</script>
+    <script type="text/javascript">makeRed('example_group_22');</script>
+    <script type="text/javascript">moveProgressBar('27.4');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00025s</span>
+      <div class="failure" id="failure_16">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:192:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:192:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">190</span>          <span class="keyword">it</span> { should exist }
+<span class="linenum">191</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">192</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">193</span>        <span class="keyword">end</span>
+<span class="linenum">194</span>        </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_23" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_23" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server</dt>
+    <script type="text/javascript">moveProgressBar('29.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.05235s</span></dd>
+    <script type="text/javascript">makeRed('div_group_23');</script>
+    <script type="text/javascript">makeRed('example_group_23');</script>
+    <script type="text/javascript">moveProgressBar('30.6');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;DisabledByDefault&quot;</span>
+      <span class="duration">0.01305s</span>
+      <div class="failure" id="failure_17">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server.has_property?(&quot;DisabledByDefault&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:198:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:198:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">196</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">SSL 3.0</span><span class="char">\\</span><span class="content">Server</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">197</span>          <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">198</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">199</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">200</span>    </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_24" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_24" class="passed">DisabledByDefault</dt>
+    <script type="text/javascript">makeRed('div_group_24');</script>
+    <script type="text/javascript">makeRed('example_group_24');</script>
+    <script type="text/javascript">moveProgressBar('32.2');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00029s</span>
+      <div class="failure" id="failure_18">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:199:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:199:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">197</span>          <span class="keyword">it</span> { should exist }
+<span class="linenum">198</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">199</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">200</span>    
+<span class="linenum">201</span>    <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_25" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_25" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client</dt>
+    <script type="text/javascript">moveProgressBar('33.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.01590s</span></dd>
+    <script type="text/javascript">makeRed('div_group_25');</script>
+    <script type="text/javascript">makeRed('example_group_25');</script>
+    <script type="text/javascript">moveProgressBar('35.4');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;DisabledByDefault&quot;</span>
+      <span class="duration">0.01337s</span>
+      <div class="failure" id="failure_19">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client.has_property?(&quot;DisabledByDefault&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:204:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:204:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">202</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">SSL 3.0</span><span class="char">\\</span><span class="content">Client</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">203</span>        <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">204</span>        <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">205</span>        its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">206</span>      <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_26" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_26" class="passed">DisabledByDefault</dt>
+    <script type="text/javascript">makeRed('div_group_26');</script>
+    <script type="text/javascript">makeRed('example_group_26');</script>
+    <script type="text/javascript">moveProgressBar('37.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00027s</span>
+      <div class="failure" id="failure_20">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:205:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:205:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">203</span>        <span class="keyword">it</span> { should exist }
+<span class="linenum">204</span>        <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">205</span>        its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">206</span>      <span class="keyword">end</span>
+<span class="linenum">207</span>          </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_27" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_27" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server</dt>
+    <script type="text/javascript">moveProgressBar('38.7');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.01633s</span></dd>
+    <script type="text/javascript">makeRed('div_group_27');</script>
+    <script type="text/javascript">makeRed('example_group_27');</script>
+    <script type="text/javascript">moveProgressBar('40.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;DisabledByDefault&quot;</span>
+      <span class="duration">0.01272s</span>
+      <div class="failure" id="failure_21">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server.has_property?(&quot;DisabledByDefault&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:211:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:211:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">209</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">TLS 1.0</span><span class="char">\\</span><span class="content">Server</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">210</span>        <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">211</span>        <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">212</span>        its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">213</span>    <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_28" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_28" class="passed">DisabledByDefault</dt>
+    <script type="text/javascript">makeRed('div_group_28');</script>
+    <script type="text/javascript">makeRed('example_group_28');</script>
+    <script type="text/javascript">moveProgressBar('41.9');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00026s</span>
+      <div class="failure" id="failure_22">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:212:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:212:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">210</span>        <span class="keyword">it</span> { should exist }
+<span class="linenum">211</span>        <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">212</span>        its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">213</span>    <span class="keyword">end</span>
+<span class="linenum">214</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">TLS 1.0</span><span class="char">\\</span><span class="content">Client</span><span class="delimiter">'</span></span>) <span class="keyword">do</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_29" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_29" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client</dt>
+    <script type="text/javascript">moveProgressBar('43.5');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.01566s</span></dd>
+    <script type="text/javascript">makeRed('div_group_29');</script>
+    <script type="text/javascript">makeRed('example_group_29');</script>
+    <script type="text/javascript">moveProgressBar('45.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;DisabledByDefault&quot;</span>
+      <span class="duration">0.01909s</span>
+      <div class="failure" id="failure_23">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client.has_property?(&quot;DisabledByDefault&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:216:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:216:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">214</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Protocols</span><span class="char">\\</span><span class="content">TLS 1.0</span><span class="char">\\</span><span class="content">Client</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">215</span>        <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">216</span>        <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">217</span>        its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">218</span>      <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_30" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_30" class="passed">DisabledByDefault</dt>
+    <script type="text/javascript">makeRed('div_group_30');</script>
+    <script type="text/javascript">makeRed('example_group_30');</script>
+    <script type="text/javascript">moveProgressBar('46.7');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00045s</span>
+      <div class="failure" id="failure_24">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:217:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:217:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">215</span>        <span class="keyword">it</span> { should exist }
+<span class="linenum">216</span>        <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">217</span>        its(<span class="string"><span class="delimiter">'</span><span class="content">DisabledByDefault</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">218</span>      <span class="keyword">end</span>
+<span class="linenum">219</span>          </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_31" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_31" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server</dt>
+    <script type="text/javascript">moveProgressBar('48.3');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.05199s</span></dd>
+    <script type="text/javascript">moveProgressBar('50.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to have property &quot;Enabled&quot;</span><span class='duration'>0.01983s</span></dd>
+  </dl>
+</div>
+<div id="div_group_32" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_32" class="passed">Enabled</dt>
+    <script type="text/javascript">moveProgressBar('51.6');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to eq 0</span><span class='duration'>0.00025s</span></dd>
+  </dl>
+</div>
+<div id="div_group_33" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_33" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client</dt>
+    <script type="text/javascript">moveProgressBar('53.2');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.01568s</span></dd>
+    <script type="text/javascript">moveProgressBar('54.8');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to have property &quot;Enabled&quot;</span><span class='duration'>0.01258s</span></dd>
+  </dl>
+</div>
+<div id="div_group_34" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_34" class="passed">Enabled</dt>
+    <script type="text/javascript">moveProgressBar('56.4');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to eq 0</span><span class='duration'>0.00018s</span></dd>
+  </dl>
+</div>
+<div id="div_group_35" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_35" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server</dt>
+    <script type="text/javascript">moveProgressBar('58.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.01518s</span></dd>
+    <script type="text/javascript">moveProgressBar('59.6');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to have property &quot;Enabled&quot;</span><span class='duration'>0.01271s</span></dd>
+  </dl>
+</div>
+<div id="div_group_36" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_36" class="passed">Enabled</dt>
+    <script type="text/javascript">moveProgressBar('61.2');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to eq 1</span><span class='duration'>0.00015s</span></dd>
+  </dl>
+</div>
+<div id="div_group_37" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_37" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL</dt>
+    <script type="text/javascript">makeRed('div_group_37');</script>
+    <script type="text/javascript">makeRed('example_group_37');</script>
+    <script type="text/javascript">moveProgressBar('62.9');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to exist</span>
+      <span class="duration">0.02537s</span>
+      <div class="failure" id="failure_25">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL to exist
+  # inspec/controls/IIS_10_Compliance.rb:241:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:241:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">239</span> <span class="comment">#7.7 Ensure NULL Cipher Suites is Disabled</span>
+<span class="linenum">240</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">NULL</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">241</span>          <span class="keyword">it</span> { should exist }</span>
+<span class="linenum">242</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="linenum">243</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('64.5');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;Disabled&quot;</span>
+      <span class="duration">0.01280s</span>
+      <div class="failure" id="failure_26">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL.has_property?(&quot;Disabled&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:242:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:242:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">240</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">NULL</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">241</span>          <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">242</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">243</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">244</span>      <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_38" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_38" class="passed">Disabled</dt>
+    <script type="text/javascript">makeRed('div_group_38');</script>
+    <script type="text/javascript">makeRed('example_group_38');</script>
+    <script type="text/javascript">moveProgressBar('66.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00027s</span>
+      <div class="failure" id="failure_27">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:243:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:243:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">241</span>          <span class="keyword">it</span> { should exist }
+<span class="linenum">242</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">243</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">244</span>      <span class="keyword">end</span>
+<span class="linenum">245</span>          </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_39" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_39" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56</dt>
+    <script type="text/javascript">makeRed('div_group_39');</script>
+    <script type="text/javascript">makeRed('example_group_39');</script>
+    <script type="text/javascript">moveProgressBar('67.7');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to exist</span>
+      <span class="duration">0.02370s</span>
+      <div class="failure" id="failure_28">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56 to exist
+  # inspec/controls/IIS_10_Compliance.rb:248:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:248:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">246</span> <span class="comment">#7.8 Ensure DES Cipher Suites is Disabled</span>
+<span class="linenum">247</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">DES 56/56</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">248</span>          <span class="keyword">it</span> { should exist }</span>
+<span class="linenum">249</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="linenum">250</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('69.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;Disabled&quot;</span>
+      <span class="duration">0.01291s</span>
+      <div class="failure" id="failure_29">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56.has_property?(&quot;Disabled&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:249:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:249:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">247</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">DES 56/56</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">248</span>          <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">249</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">250</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">251</span>      <span class="keyword">end</span>   </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_40" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_40" class="passed">Disabled</dt>
+    <script type="text/javascript">makeRed('div_group_40');</script>
+    <script type="text/javascript">makeRed('example_group_40');</script>
+    <script type="text/javascript">moveProgressBar('70.9');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00028s</span>
+      <div class="failure" id="failure_30">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:250:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:250:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">248</span>          <span class="keyword">it</span> { should exist }
+<span class="linenum">249</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">250</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">251</span>      <span class="keyword">end</span>   
+<span class="linenum">252</span>          </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_41" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_41" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128</dt>
+    <script type="text/javascript">moveProgressBar('72.5');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.02142s</span></dd>
+    <script type="text/javascript">makeRed('div_group_41');</script>
+    <script type="text/javascript">makeRed('example_group_41');</script>
+    <script type="text/javascript">moveProgressBar('74.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;Disabled&quot;</span>
+      <span class="duration">0.01278s</span>
+      <div class="failure" id="failure_31">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128.has_property?(&quot;Disabled&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:256:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:256:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">254</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">RC4 40/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">255</span>          <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">256</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }         </span>
+<span class="linenum">257</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">258</span>      <span class="keyword">end</span>      </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_42" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_42" class="passed">Disabled</dt>
+    <script type="text/javascript">makeRed('div_group_42');</script>
+    <script type="text/javascript">makeRed('example_group_42');</script>
+    <script type="text/javascript">moveProgressBar('75.8');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00027s</span>
+      <div class="failure" id="failure_32">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:257:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:257:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">255</span>          <span class="keyword">it</span> { should exist }
+<span class="linenum">256</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }         
+<span class="offending"><span class="linenum">257</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">258</span>      <span class="keyword">end</span>      
+<span class="linenum">259</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">RC4 56/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_43" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_43" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128</dt>
+    <script type="text/javascript">moveProgressBar('77.4');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.02188s</span></dd>
+    <script type="text/javascript">makeRed('div_group_43');</script>
+    <script type="text/javascript">makeRed('example_group_43');</script>
+    <script type="text/javascript">moveProgressBar('79.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;Disabled&quot;</span>
+      <span class="duration">0.01313s</span>
+      <div class="failure" id="failure_33">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128.has_property?(&quot;Disabled&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:261:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:261:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">259</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">RC4 56/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">260</span>        <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">261</span>        <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">262</span>        its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">263</span>      <span class="keyword">end</span>      </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_44" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_44" class="passed">Disabled</dt>
+    <script type="text/javascript">makeRed('div_group_44');</script>
+    <script type="text/javascript">makeRed('example_group_44');</script>
+    <script type="text/javascript">moveProgressBar('80.6');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00027s</span>
+      <div class="failure" id="failure_34">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:262:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:262:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">260</span>        <span class="keyword">it</span> { should exist }
+<span class="linenum">261</span>        <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">262</span>        its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">263</span>      <span class="keyword">end</span>      
+<span class="linenum">264</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">RC4 64/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_45" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_45" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128</dt>
+    <script type="text/javascript">makeRed('div_group_45');</script>
+    <script type="text/javascript">makeRed('example_group_45');</script>
+    <script type="text/javascript">moveProgressBar('82.2');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to exist</span>
+      <span class="duration">0.02232s</span>
+      <div class="failure" id="failure_35">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128 to exist
+  # inspec/controls/IIS_10_Compliance.rb:265:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:265:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">263</span>      <span class="keyword">end</span>      
+<span class="linenum">264</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">RC4 64/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">265</span>      <span class="keyword">it</span> { should exist }</span>
+<span class="linenum">266</span>      <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="linenum">267</span>      its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('83.8');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;Disabled&quot;</span>
+      <span class="duration">0.01253s</span>
+      <div class="failure" id="failure_36">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128.has_property?(&quot;Disabled&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:266:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:266:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">264</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">RC4 64/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">265</span>      <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">266</span>      <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">267</span>      its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">268</span>    </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_46" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_46" class="passed">Disabled</dt>
+    <script type="text/javascript">makeRed('div_group_46');</script>
+    <script type="text/javascript">makeRed('example_group_46');</script>
+    <script type="text/javascript">moveProgressBar('85.4');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00024s</span>
+      <div class="failure" id="failure_37">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:267:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:267:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">265</span>      <span class="keyword">it</span> { should exist }
+<span class="linenum">266</span>      <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">267</span>      its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">268</span>    
+<span class="linenum">269</span>  <span class="keyword">end</span>      </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_47" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_47" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128</dt>
+    <script type="text/javascript">moveProgressBar('87.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">is expected to exist</span><span class='duration'>0.02113s</span></dd>
+    <script type="text/javascript">makeRed('div_group_47');</script>
+    <script type="text/javascript">makeRed('example_group_47');</script>
+    <script type="text/javascript">moveProgressBar('88.7');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;Disabled&quot;</span>
+      <span class="duration">0.01291s</span>
+      <div class="failure" id="failure_38">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128.has_property?(&quot;Disabled&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:272:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:272:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">270</span>  <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">RC4 128/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">271</span>    <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">272</span>    <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">273</span>    its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">274</span>  <span class="keyword">end</span>   </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_48" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_48" class="passed">Disabled</dt>
+    <script type="text/javascript">makeRed('div_group_48');</script>
+    <script type="text/javascript">makeRed('example_group_48');</script>
+    <script type="text/javascript">moveProgressBar('90.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00024s</span>
+      <div class="failure" id="failure_39">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:273:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:273:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">271</span>    <span class="keyword">it</span> { should exist }
+<span class="linenum">272</span>    <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">273</span>    its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">274</span>  <span class="keyword">end</span>   
+<span class="linenum">275</span>  </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_49" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_49" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\AES 128/128</dt>
+    <script type="text/javascript">makeRed('div_group_49');</script>
+    <script type="text/javascript">makeRed('example_group_49');</script>
+    <script type="text/javascript">moveProgressBar('91.9');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to exist</span>
+      <span class="duration">0.02163s</span>
+      <div class="failure" id="failure_40">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\AES 128/128 to exist
+  # inspec/controls/IIS_10_Compliance.rb:278:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:278:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">276</span> <span class="comment">#7.10 Ensure AES 128/128 Cipher Suite is Disabled</span>
+<span class="linenum">277</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">AES 128/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">278</span>          <span class="keyword">it</span> { should exist }</span>
+<span class="linenum">279</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="linenum">280</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('93.5');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;Disabled&quot;</span>
+      <span class="duration">0.01271s</span>
+      <div class="failure" id="failure_41">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\AES 128/128.has_property?(&quot;Disabled&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:279:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:279:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">277</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">AES 128/128</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">278</span>          <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">279</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">280</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }
+<span class="linenum">281</span>    <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_50" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_50" class="passed">Disabled</dt>
+    <script type="text/javascript">makeRed('div_group_50');</script>
+    <script type="text/javascript">makeRed('example_group_50');</script>
+    <script type="text/javascript">moveProgressBar('95.1');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 1</span>
+      <span class="duration">0.00026s</span>
+      <div class="failure" id="failure_42">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 1
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:280:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:280:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">278</span>          <span class="keyword">it</span> { should exist }
+<span class="linenum">279</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">280</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Disabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">1</span> }</span>
+<span class="linenum">281</span>    <span class="keyword">end</span>
+<span class="linenum">282</span>        </code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_51" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_51" class="passed">Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\AES 256/256</dt>
+    <script type="text/javascript">makeRed('div_group_51');</script>
+    <script type="text/javascript">makeRed('example_group_51');</script>
+    <script type="text/javascript">moveProgressBar('96.7');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to exist</span>
+      <span class="duration">0.02177s</span>
+      <div class="failure" id="failure_43">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\AES 256/256 to exist
+  # inspec/controls/IIS_10_Compliance.rb:285:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:285:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">283</span> <span class="comment">#7.11 Ensure AES 256/256 Cipher Suite is Enabled</span>
+<span class="linenum">284</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">AES 256/256</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="offending"><span class="linenum">285</span>          <span class="keyword">it</span> { should exist }</span>
+<span class="linenum">286</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Enabled</span><span class="delimiter">'</span></span> }
+<span class="linenum">287</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Enabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">0</span> }</code></pre>
+      </div>
+    </dd>
+    <script type="text/javascript">moveProgressBar('98.3');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to have property &quot;Enabled&quot;</span>
+      <span class="duration">0.01261s</span>
+      <div class="failure" id="failure_44">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+    expected `Registry Key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\AES 256/256.has_property?(&quot;Enabled&quot;)` to be truthy, got false
+  # inspec/controls/IIS_10_Compliance.rb:286:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:286:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">284</span>      <span class="keyword">describe</span> registry_key(<span class="string"><span class="delimiter">'</span><span class="content">HKEY_LOCAL_MACHINE</span><span class="char">\\</span><span class="content">SYSTEM</span><span class="char">\\</span><span class="content">CurrentControlSet</span><span class="char">\\</span><span class="content">Control</span><span class="char">\\</span><span class="content">SecurityProviders</span><span class="char">\\</span><span class="content">SCHANNEL</span><span class="char">\\</span><span class="content">Ciphers</span><span class="char">\\</span><span class="content">AES 256/256</span><span class="delimiter">'</span></span>) <span class="keyword">do</span>
+<span class="linenum">285</span>          <span class="keyword">it</span> { should exist }
+<span class="offending"><span class="linenum">286</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Enabled</span><span class="delimiter">'</span></span> }</span>
+<span class="linenum">287</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Enabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">0</span> }
+<span class="linenum">288</span>      <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<div id="div_group_52" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_52" class="passed">Enabled</dt>
+    <script type="text/javascript">makeRed('div_group_52');</script>
+    <script type="text/javascript">makeRed('example_group_52');</script>
+    <script type="text/javascript">moveProgressBar('100.0');</script>
+    <dd class="example failed">
+      <span class="failed_spec_name">is expected to eq 0</span>
+      <span class="duration">0.00025s</span>
+      <div class="failure" id="failure_45">
+        <div class="message"><pre>  Failure/Error: DEFAULT_FAILURE_NOTIFIER = lambda { |failure, _opts| raise failure }
+
+    expected: 0
+         got: nil
+
+    (compared using ==)
+  # inspec/controls/IIS_10_Compliance.rb:287:in `block (3 levels) in load_with_context&#39;</pre></div>
+        <div class="backtrace"><pre>inspec/controls/IIS_10_Compliance.rb:287:in `block (3 levels) in load_with_context&#39;</pre></div>
+    <pre class="ruby"><code><span class="linenum">285</span>          <span class="keyword">it</span> { should exist }
+<span class="linenum">286</span>          <span class="keyword">it</span> { should have_property <span class="string"><span class="delimiter">'</span><span class="content">Enabled</span><span class="delimiter">'</span></span> }
+<span class="offending"><span class="linenum">287</span>          its(<span class="string"><span class="delimiter">'</span><span class="content">Enabled</span><span class="delimiter">'</span></span>) { should eq <span class="integer">0</span> }</span>
+<span class="linenum">288</span>      <span class="keyword">end</span>
+<span class="linenum">289</span>  <span class="keyword">end</span></code></pre>
+      </div>
+    </dd>
+  </dl>
+</div>
+<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>3.46940 seconds</strong>";</script>
+<script type="text/javascript">document.getElementById('totals').innerHTML = "62 examples, 45 failures";</script>
+</div>
+</div>
+</body>
+</html>
